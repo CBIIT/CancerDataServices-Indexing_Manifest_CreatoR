@@ -119,8 +119,8 @@ DCF_required=c("acl",
                'file_url_in_cds')
 
 #If one of these columns is missing, it will throw an error.
-if (!any(DCF_required%in%colnames(df))){
-  stop("The input file is missing one of the required columns for indexing: acl, file_size, md5sum, file_url_in_cds.")
+if (any(!DCF_required%in%colnames(df))){
+  stop("\n\nThe input file is missing one of the required columns for indexing: acl, file_size, md5sum, file_url_in_cds.\n\n")
 }
 
 #Take the data frame, clean up the property name for url, and bring those columns to the front.
