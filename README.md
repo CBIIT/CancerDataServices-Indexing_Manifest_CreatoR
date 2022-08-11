@@ -19,3 +19,12 @@ Options:
 	-h, --help
 		Show this help message and exit
 ```
+
+When running the command on the test file:
+```
+Rscript --vanilla CDS-Indexing_Manifest_CreatoR.R -f test_files/a_all_pass-v1.3.1.xlsx 
+The manifest files are being made at this time.
+The manifest files are located in the same directory as your input file.
+```
+
+The output will be two files: one contains only the file information for DCF indexing, the other contains all information for Seven Bridges indexing.
