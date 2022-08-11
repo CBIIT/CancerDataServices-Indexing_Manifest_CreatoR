@@ -85,7 +85,7 @@ path=paste(stri_reverse(stri_split_fixed(str = stri_reverse(file_path), pattern=
 
 #Output file name based on input file name and date/time stamped.
 output_file=paste(file_name,
-                  "_indexing_output_",
+                  "indexing_output_",
                   stri_replace_all_fixed(
                     str = stri_replace_all_fixed(
                       str = stri_replace_all_fixed(
@@ -192,8 +192,7 @@ df_sb=suppressMessages(left_join(df,df_dcf)%>%
   select(GUID,acl, file_size, md5sum, url, everything()))
 
 #write out TSVs for DCF and SB
-write_tsv(x = df_dcf, file = paste(path,"DCF_",output_file,sep = ""),na="")
-write_tsv(x = df_sb, file = paste(path,"SB_",output_file,sep = ""),na="")
+write_tsv(x = df_sb, file = paste(path,output_file,sep = ""),na="")
 
 #An end message for the user that the manifest files have been created.
 cat("The manifest files are located in the same directory as your input file.\n")
