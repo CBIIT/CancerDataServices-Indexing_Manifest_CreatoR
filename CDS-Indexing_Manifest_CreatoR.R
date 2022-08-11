@@ -9,7 +9,7 @@
 #
 ##################
 
-#This takes a CDS v1.3.1 submission template as input, sets up the manifest for indexing and assign GUIDs to all unqiue files.
+#This takes a CDS v1.3.1 submission template as input, sets up the manifest for indexing and assign GUIDs to all unique files.
 
 #Run the following command in a terminal where R is installed for help.
 
@@ -68,7 +68,7 @@ if (is.null(opt$file)){
 file_path=opt$file
 
 #A start message for the user that the manifest creation is underway.
-cat("The manifest files are being made at this time.\n")
+cat("The manifest file is being made at this time.\n")
 
 ###############
 #
@@ -118,35 +118,44 @@ DCF_required=c("acl",
                "md5sum",
                'file_url_in_cds')
 
+DCF_required_file_info=DCF_required[-1]
+
 #If one of these columns is deleted and missing, it will throw an error.
 if (any(!DCF_required%in%colnames(df))){
   stop("\n\nThe input file is missing one of the required columns for indexing: acl, file_size, md5sum, file_url_in_cds.\n\n")
 }
 
-#Will stop the code if there are required columns that have missing data, and not all values in that row are missing, a row that doesn't have a file. This will not count against the acl property, as it is likely that will have a value even if there is not a file for that entry.
-for (property in DCF_required){
+#Will stop the code if there are required file columns that have missing data, and not all values in that row are missing, a row that doesn't have a file. This will not count against the acl property, as it is likely that will have a value even if there is not a file for that entry.
+for (property in DCF_required_file_info){
   for (position in 1:dim(df[property])[1])
     if(is.na(df[property][position,])){
-      if(!all(is.na(df[DCF_required[-1]][position,]))){
-        stop("\n\nThere are missing portions of required information (acl, file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidationR.\n\n")
+      if(!all(is.na(df[DCF_required_file_info][position,]))){
+        stop("\n\nThere are missing portions of required file information (file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidationR.\n\n")
       }
     }
 }
 
+#Will stop the code if the required file columns are present but the ACL value(s) are missing for the corresponding entry.
+for (position in 1:dim(df)[1]){
+  if (is.na(df['acl'][position,]) & !all(is.na(df[DCF_required_file_info][position,]))){
+    stop("\n\nThere are missing portions of required file information (acl) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidationR.\n\n")
+  }
+}
+
+
+
 #Take the data frame, clean up the property name for url, and bring those columns to the front.
 df=df%>%
   mutate(url=file_url_in_cds)%>%
-  select(acl,file_size,md5sum,url,-file_url_in_cds,everything())
+  select(file_size,md5sum,url,acl,-file_url_in_cds,everything())
 
 #Make a subset data frame for DCF, since they only need those 5 columns for indexing.
 df_dcf=df%>%
   mutate(GUID="")%>%
-  select(GUID,acl,file_size,md5sum,url)
+  select(GUID,file_size,md5sum,url,acl)
 
 #Remove rows that do not have file specific info located in the required columns.
-DCF_required_file_info=c("file_size",
-               "md5sum",
-               'url')
+DCF_required_file_info[3]<-'url'
 
 for (row in 1:dim(df_dcf)[1]){
   if (all(is.na(df_dcf[DCF_required_file_info][row,]))){
@@ -187,11 +196,11 @@ for (x in 1:dim(df_dcf)[1]){
 #Take the uuids in the GUID column and paste on the 'dg.4DCF/' prefix to create GUIDs for all the files.
 df_dcf=mutate(df_dcf,GUID=paste("dg.4DCF/",GUID,sep = ""))
 
-#Take the DCF indexing manifest and join it back to the full manifest for Seven Bridges. This will fill in any duplictate files with the same GUID value, ensuring that only one file has one GUID value.
+#Take the DCF indexing manifest and join it back to the full manifest for Seven Bridges. This will fill in any duplicate files with the same GUID value, ensuring that only one file has one GUID value.
 df_sb=suppressMessages(left_join(df,df_dcf)%>%
-  select(GUID,acl, file_size, md5sum, url, everything()))
+                         select(GUID, file_size, md5sum, url, acl, everything()))
 
-#write out TSVs for DCF and SB
+#write out TSV manifest.
 write_tsv(x = df_sb, file = paste(path,output_file,sep = ""),na="")
 
 #An end message for the user that the manifest files have been created.
