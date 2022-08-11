@@ -54,7 +54,7 @@ option_list = list(
 )
 
 #create list of options and values for file input
-opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Submission_ValidationR v.1.3.1")
+opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Submission_ValidationR v.1.3.3")
 opt = parse_args(opt_parser)
 
 #If no options are presented, return --help, stop and print the following message.
@@ -123,11 +123,11 @@ if (any(!DCF_required%in%colnames(df))){
   stop("\n\nThe input file is missing one of the required columns for indexing: acl, file_size, md5sum, file_url_in_cds.\n\n")
 }
 
-#Will stop the code if there are required columns that have missing data, and not all values in that row are missing, a row that doesn't have a file.
+#Will stop the code if there are required columns that have missing data, and not all values in that row are missing, a row that doesn't have a file. This will not count against the acl property, as it is likely that will have a value even if there is not a file for that entry.
 for (property in DCF_required){
   for (position in 1:dim(df[property])[1])
     if(is.na(df[property][position,])){
-      if(!all(is.na(df[DCF_required][position,]))){
+      if(!all(is.na(df[DCF_required[-1]][position,]))){
         stop("\n\nThere are missing portions of required information (acl, file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidatoR.\n\n")
       }
     }
@@ -142,6 +142,17 @@ df=df%>%
 df_dcf=df%>%
   mutate(GUID="")%>%
   select(GUID,acl,file_size,md5sum,url)
+
+#Remove rows that do not have file specific info located in the required columns.
+DCF_required_file_info=c("file_size",
+               "md5sum",
+               'url')
+
+for (row in 1:dim(df_dcf)[1]){
+  if (all(is.na(df_dcf[DCF_required_file_info][row,]))){
+    df_dcf=df_dcf[-row,]
+  }
+}
 
 #Determine that files are unique, prevents multiple GUIDs for one file.
 df_dcf=unique(df_dcf)
