@@ -85,7 +85,7 @@ path=paste(stri_reverse(stri_split_fixed(str = stri_reverse(file_path), pattern=
 
 #Output file name based on input file name and date/time stamped.
 output_file=paste(file_name,
-                  "indexing_output_",
+                  "_indexing_output_",
                   stri_replace_all_fixed(
                     str = stri_replace_all_fixed(
                       str = stri_replace_all_fixed(
