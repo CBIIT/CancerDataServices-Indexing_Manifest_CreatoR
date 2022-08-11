@@ -54,7 +54,7 @@ option_list = list(
 )
 
 #create list of options and values for file input
-opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Submission_ValidationR v.1.3.3")
+opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Submission_ValidationR v.1.3.1")
 opt = parse_args(opt_parser)
 
 #If no options are presented, return --help, stop and print the following message.
@@ -118,9 +118,19 @@ DCF_required=c("acl",
                "md5sum",
                'file_url_in_cds')
 
-#If one of these columns is missing, it will throw an error.
+#If one of these columns is deleted and missing, it will throw an error.
 if (any(!DCF_required%in%colnames(df))){
   stop("\n\nThe input file is missing one of the required columns for indexing: acl, file_size, md5sum, file_url_in_cds.\n\n")
+}
+
+#Will stop the code if there are required columns that have missing data, and not all values in that row are missing, a row that doesn't have a file.
+for (property in DCF_required){
+  for (position in 1:dim(df[property])[1])
+    if(is.na(df[property][position,])){
+      if(!all(is.na(df[DCF_required][position,]))){
+        stop("\n\nThere are missing portions of required information (acl, file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidatoR.\n\n")
+      }
+    }
 }
 
 #Take the data frame, clean up the property name for url, and bring those columns to the front.
