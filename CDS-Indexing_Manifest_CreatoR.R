@@ -9,11 +9,12 @@
 #
 ##################
 
-#This takes a CDS v1.3.1 submission template as input, sets up the manifest for indexing and assigned GUIDs to all unqiue files.
+#This takes a CDS v1.3.1 submission template as input, sets up the manifest for indexing and assign GUIDs to all unqiue files.
 
 #Run the following command in a terminal where R is installed for help.
 
-#Rscript --vanilla CDS-Submission_ValidationR.R --help
+#Rscript --vanilla CDS-Indexing_Manifest_CreatoR.R --help
+
 
 ##################
 #
@@ -70,6 +71,7 @@ file_path=opt$file
 #A start message for the user that the manifest creation is underway.
 cat("The manifest files are being made at this time.\n")
 
+                 
 ###############
 #
 # File name manipulation
@@ -128,7 +130,7 @@ for (property in DCF_required){
   for (position in 1:dim(df[property])[1])
     if(is.na(df[property][position,])){
       if(!all(is.na(df[DCF_required[-1]][position,]))){
-        stop("\n\nThere are missing portions of required information (acl, file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidatoR.\n\n")
+        stop("\n\nThere are missing portions of required information (acl, file_size, md5sum, file_url_in_cds) that are needed for manifest creation.\nPlease make sure to validate the submission using the CDS-SubmissionValidationR.\n\n")
       }
     }
 }
