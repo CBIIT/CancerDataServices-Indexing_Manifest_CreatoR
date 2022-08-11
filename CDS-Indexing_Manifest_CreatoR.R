@@ -15,7 +15,6 @@
 
 #Rscript --vanilla CDS-Indexing_Manifest_CreatoR.R --help
 
-
 ##################
 #
 # Env. Setup
@@ -55,7 +54,7 @@ option_list = list(
 )
 
 #create list of options and values for file input
-opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Submission_ValidationR v.1.3.3")
+opt_parser = OptionParser(option_list=option_list, description = "\nCDS-Indexing_Manifest_CreatoR v.1.3.1")
 opt = parse_args(opt_parser)
 
 #If no options are presented, return --help, stop and print the following message.
@@ -71,7 +70,6 @@ file_path=opt$file
 #A start message for the user that the manifest creation is underway.
 cat("The manifest files are being made at this time.\n")
 
-                 
 ###############
 #
 # File name manipulation
