@@ -155,9 +155,10 @@ df_dcf=df%>%
   mutate(GUID="")%>%
   select(GUID,file_size,md5sum,url,acl)
 
-#Remove rows that do not have file specific info located in the required columns.
+#Change 'file_url_in_cds' to 'url'
 DCF_required_file_info[3]<-'url'
 
+#Remove rows that do not have file specific info located in the required columns.
 for (row in 1:dim(df_dcf)[1]){
   if (all(is.na(df_dcf[DCF_required_file_info][row,]))){
     df_dcf=df_dcf[-row,]
@@ -184,7 +185,7 @@ get_os <- function(){
   tolower(os)
 }
 
-#For each unique file, apply a uuid to the GUID column. There is logic to handle this in both OSx and Linux, as the UUID call is different.
+#For each unique file, apply a uuid to the GUID column. There is logic to handle this in both OSx and Linux, as the UUID call is different from R to the console.
 for (x in 1:dim(df_dcf)[1]){
   if (get_os()=="osx"){
     uuid=tolower(system(command = "uuidgen", intern = T))
@@ -197,7 +198,7 @@ for (x in 1:dim(df_dcf)[1]){
 #Take the uuids in the GUID column and paste on the 'dg.4DCF/' prefix to create GUIDs for all the files.
 df_dcf=mutate(df_dcf,GUID=paste("dg.4DCF/",GUID,sep = ""))
 
-#Take the DCF indexing manifest and join it back to the full manifest for Seven Bridges. This will fill in any duplicate files with the same GUID value, ensuring that only one file has one GUID value.
+#Take the DCF indexing manifest and join it back to the full manifest. This will fill in any duplicate files with the same GUID value, ensuring that only one file has one GUID value.
 df_sb=suppressMessages(left_join(df,df_dcf)%>%
                          select(GUID, file_size, md5sum, url, acl, everything()))
 
