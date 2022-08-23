@@ -78,9 +78,9 @@ cat("The manifest file is being made at this time.\n")
 ###############
 
 #Rework the file path to obtain a file name, this will be used for the output file.
-file_name=stri_reverse(stri_split_fixed(str = stri_reverse(file_path), pattern="/",n = 2)[[1]][1])
+file_name=stri_reverse(stri_split_fixed(str = (stri_split_fixed(str = stri_reverse(file_path), pattern="/",n = 2)[[1]][1]),pattern = ".", n=2)[[1]][2])
 
-ext=tolower(stri_reverse(stri_split_fixed(str = stri_reverse(file_name),pattern = ".",n=2)[[1]][1]))
+ext=tolower(stri_reverse(stri_split_fixed(str = stri_reverse(file_path),pattern = ".",n=2)[[1]][1]))
 
 path=paste(stri_reverse(stri_split_fixed(str = stri_reverse(file_path), pattern="/",n = 2)[[1]][2]),"/",sep = "")
 
