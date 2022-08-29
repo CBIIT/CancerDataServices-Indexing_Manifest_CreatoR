@@ -195,7 +195,7 @@ df_sb=suppressMessages(left_join(df,df_dcf)%>%
                          select(GUID, file_size, md5sum, url, acl, everything()))
 
 #write out TSV manifest.
-write_tsv(x = df_sb, file = paste(path,output_file,sep = ""),na="")
+write_tsv(x = df_sb, file = paste(path,output_file,".tsv",sep = ""),na="")
 
 #An end message for the user that the manifest files have been created.
 cat("The manifest files are located in the same directory as your input file.\n")
