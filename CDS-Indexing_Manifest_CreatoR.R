@@ -140,7 +140,7 @@ for (position in 1:dim(df)[1]){
 #Take the data frame, clean up the property name for url, and bring those columns to the front.
 df=df%>%
   mutate(url=file_url_in_cds)%>%
-  select(file_size,md5sum,url,acl,-file_url_in_cds,everything())
+  select(file_size,md5sum,url,acl,everything())
 
 #Make a subset data frame for DCF, since they only need those 5 columns for indexing.
 df_dcf=df%>%
