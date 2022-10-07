@@ -188,7 +188,7 @@ for (x in 1:dim(df_dcf)[1]){
 }
 
 #Take the uuids in the GUID column and paste on the 'dg.4DCF/' prefix to create GUIDs for all the files.
-df_dcf=mutate(df_dcf,GUID=paste("dg.4DCF/",GUID,sep = ""))
+df_dcf=mutate(df_dcf,GUID=paste("dg.4DFC/",GUID,sep = ""))
 
 #Take the DCF indexing manifest and join it back to the full manifest. This will fill in any duplicate files with the same GUID value, ensuring that only one file has one GUID value.
 df_sb=suppressMessages(left_join(df,df_dcf)%>%
