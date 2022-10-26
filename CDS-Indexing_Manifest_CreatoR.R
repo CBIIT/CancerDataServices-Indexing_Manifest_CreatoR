@@ -78,15 +78,15 @@ cat("The manifest file is being made at this time.\n")
 ###############
 
 #Rework the file path to obtain a file name, this will be used for the output file.
-file_name=stri_reverse(stri_split_fixed(str = (stri_split_fixed(str = stri_reverse(file_path), pattern="/",n = 2)[[1]][1]),pattern = ".", n=2)[[1]][2])
+file_name=stri_reverse(stri_split_fixed(stri_reverse(basename(file_path)),pattern = ".", n=2)[[1]][2])
 
-ext=tolower(stri_reverse(stri_split_fixed(str = stri_reverse(file_path),pattern = ".",n=2)[[1]][1]))
+ext=tolower(stri_reverse(stri_split_fixed(stri_reverse(basename(file_path)),pattern = ".", n=2)[[1]][1]))
 
-path=paste(stri_reverse(stri_split_fixed(str = stri_reverse(file_path), pattern="/",n = 2)[[1]][2]),"/",sep = "")
+path=paste(dirname(file_path),"/",sep = "")
 
 #Output file name based on input file name and date/time stamped.
 output_file=paste(file_name,
-                  "_indexing_output_",
+                  "_index_",
                   stri_replace_all_fixed(
                     str = Sys.Date(),
                     pattern = "-",
@@ -135,6 +135,17 @@ for (position in 1:dim(df)[1]){
   }
 }
 
+#Do a comparison of the file_url_in_cds and file name to determine if the url contains the file name or if that needs to be added onto the file_url_in_cds
+for (rownum in 1:dim(df)[1]){
+  if (!is.na(df$file_url_in_cds[rownum])){
+    if (basename(df$file_url_in_cds[rownum])!=df$file_name[rownum]){
+      if (substr(x = df$file_url_in_cds[rownum],start = nchar(df$file_url_in_cds[rownum]), stop = nchar(df$file_url_in_cds[rownum]))!="/"){
+        df$file_url_in_cds[rownum]=paste(df$file_url_in_cds[rownum],"/",sep = "")
+      }
+      df$file_url_in_cds[rownum]=paste(df$file_url_in_cds[rownum],df$file_name[rownum],sep = "")
+    }
+  }
+}
 
 
 #Take the data frame, clean up the property name for url, and bring those columns to the front.
