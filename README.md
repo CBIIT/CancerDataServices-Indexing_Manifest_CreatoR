@@ -10,7 +10,7 @@ Rscript --vanilla CDS-Indexing_Manifest_CreatoR.R -h
 ```
 Usage: CDS-Indexing_Manifest_CreatoR.R [options]
 
-CDS-Submission_ValidationR v.1.3.1
+CDS-Submission_ValidationR v2.0.0
 
 Options:
 	-f CHARACTER, --file=CHARACTER
