@@ -86,11 +86,11 @@ path=paste(dirname(file_path),"/",sep = "")
 
 #Output file name based on input file name and date/time stamped.
 output_file=paste(file_name,
-                  "_index_",
+                  "_index",
                   stri_replace_all_fixed(
                     str = Sys.Date(),
                     pattern = "-",
-                    replacement = "_"),
+                    replacement = ""),
                   sep="")
 
 #Read in metadata page/file to check against the expected/required properties. 
@@ -209,4 +209,4 @@ df_sb=suppressMessages(left_join(df,df_dcf)%>%
 write_tsv(x = df_sb, file = paste(path,output_file,".tsv",sep = ""),na="")
 
 #An end message for the user that the manifest files have been created.
-cat("The manifest files are located in the same directory as your input file.\n")
+cat(paste("\n\nProcess Complete.\n\nThe output file can be found here: ",path,"\n\n",sep = "")) 
