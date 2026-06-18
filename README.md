@@ -1,3 +1,8 @@
+> [!WARNING]
+> This repository has been archived and is no longer maintained.  
+> The code is provided for historical reference and may contain unpatched or unknown vulnerabilities.  
+> It should not be used in production systems.  
+
 # CancerDataServices-Indexing_Manifest_CreatoR
 A script that takes in a [validated](https://github.com/CBIIT/CancerDataServices-SubmissionValidationR) [CDS submission template](https://github.com/CBIIT/cds-model/tree/main/metadata-manifest) and creates indexing manifests.
 
